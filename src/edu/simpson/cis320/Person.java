@@ -9,13 +9,9 @@ public class Person {
     private String phone;
     private String birthday;
 
-    public int getId() {
-        return id;
-    }
+    public int getId() { return id; }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public void setId(int id) { this.id = id; }
 
     public String getFirst() {
         return first;
