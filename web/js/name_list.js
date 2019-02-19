@@ -10,7 +10,7 @@ $.getJSON(url, null, function(json_result)
         // Here we loop the array and print the first name.
         for (var i = 0; i < json_result.length; i++) {
             var phone = json_result[i].phone;
-            var myPhone = phone.substring(0,3) + "-" + phone.substring(4,7) + "-" + phone.substring(7,10);
+            var myPhone = phone.substring(0,3) + "-" + phone.substring(3,6) + "-" + phone.substring(6,10);
             $('#datatable tr:first').after('<tr>' +
                 '<td>' + json_result[i].id + '</td>' +
                 '<td>' + json_result[i].first + '</td>' +
@@ -25,11 +25,10 @@ $.getJSON(url, null, function(json_result)
     });
 }
 
-updateTable();
+
 
 // Called when "Add Item" button is clicked
 function showDialogAdd() {
-
     // Print that we got here
     console.log("Opening add item dialog");
 
@@ -42,22 +41,34 @@ function showDialogAdd() {
     $('#lastName').val("");
     $('#email').val("");
     $('#phone').val("");
-    $('#birthday').val("");
+    console.log($('#birthday').val());
+
+    $('#firstName').removeClass("is-valid");
+    $('#lastName').removeClass("is-valid");
+    $('#email').removeClass("is-valid");
+    $('#phone').removeClass("is-valid");
+    $('#birthday').removeClass("is-valid");
+    $('#firstName').removeClass("is-invalid");
+    $('#lastName').removeClass("is-invalid");
+    $('#email').removeClass("is-invalid");
+    $('#phone').removeClass("is-invalid");
+    $('#birthday').removeClass("is-invalid");
+
+
 
     // Show the hidden dialog
     $('#myModal').modal('show');
-
-}
-
-function saveChanges() {
-    console.log("Changes have been saved.")
 }
 
 var addItemButton = $('#addItem');
 addItemButton.on("click", showDialogAdd)
 
+function saveChanges() {
+    console.log("Changes have been saved.")
+}
+
 var saveButton = $('#saveChanges');
-saveButton.on("click", saveChanges);
+//saveButton.on("click", saveChanges);
 
 // Function to validate
 function validateFunction() {
@@ -71,51 +82,65 @@ function validateFunction() {
     var nameReg = /^[a-zA-Z]+(([',.-][a-z])?[a-zA-Z]*)*$/;
     var emailReg = /^[A-Za-z0-9-_.]+@[A-Za-z0-9]+[.]+[A-Za-z0-9]{3,30}$/;
     var phoneReg = /^[0-9]{3}([-]?)[0-9]{3}([-]?)[0-9]{4}$/;
-    var birthdayReg = /^[0-9]{2}[/][0-9]{2}[/][0-9]{4}$/;
+    var birthdayReg = /^[0-9]{4}[-][0-9]{2}[-][0-9]{2}$/i;
 
 // Test the regular expression to see if there is a match
     if (nameReg.test(v1)) {
         $('#result').text("Ok");
-        $('#firstName').removeClass("is-valid");
+        $('#firstName').removeClass("is-invalid");
+        $('#firstName').addClass("is-valid");
 
     } else {
         $('#result').text("Bad");
-        $('#firstName').removeClass("is-invalid");
-
+        $('#firstName').removeClass("is-valid");
+        $('#firstName').addClass("is-invalid");
     }
 
     if (nameReg.test(v2)) {
         $('#result').text("Ok");
+        $('#lastName').removeClass("is-invalid");
+        $('#lastName').addClass("is-valid");
+
     } else {
         $('#result').text("Bad");
+        $('#lastName').removeClass("is-valid");
+        $('#lastName').addClass("is-invalid");
     }
 
     if (emailReg.test(v3)) {
         $('#result').text("Ok");
+        $('#email').removeClass("is-invalid");
+        $('#email').addClass("is-valid");
+
     } else {
         $('#result').text("Bad");
+        $('#email').removeClass("is-valid");
+        $('#email').addClass("is-invalid");
     }
     if (phoneReg.test(v4)) {
         $('#result').text("Ok");
+        $('#phone').removeClass("is-invalid");
+        $('#phone').addClass("is-valid");
+
     } else {
         $('#result').text("Bad");
+        $('#phone').removeClass("is-valid");
+        $('#phone').addClass("is-invalid");
     }
     if (birthdayReg.test(v5)) {
         $('#result').text("Ok");
+        $('#birthday').removeClass("is-invalid");
+        $('#birthday').addClass("is-valid");
+
     } else {
         $('#result').text("Bad");
+        $('#birthday').removeClass("is-valid");
+        $('#birthday').addClass("is-invalid");
     }
+
+
 }
 
 saveButton.on("click", validateFunction);
 
-// $('#firstName').removeClass("is-invalid");
-// $('#firstName').addClass("is-valid");
-// $('#lastName').removeClass("is-invalid");
-// $('#lastName').addClass("is-valid");
-// $('#email').removeClass("is-invalid");
-// $('#email').addClass("is-valid");
-// $('#phone').removeClass("is-invalid");
-// $('#phone').addClass("is-valid");
-// $('#birthday').removeClass("is-invalid");
-// $('#birthday').addClass("is-valid");
+updateTable();
