@@ -25,7 +25,10 @@ $.getJSON(url, null, function(json_result)
     });
 }
 
+updateTable();
 
+var addItemButton = $('#addItem');
+addItemButton.on("click", showDialogAdd)
 
 // Called when "Add Item" button is clicked
 function showDialogAdd() {
@@ -41,7 +44,7 @@ function showDialogAdd() {
     $('#lastName').val("");
     $('#email').val("");
     $('#phone').val("");
-    console.log($('#birthday').val());
+    $('#birthday').val();
 
     $('#firstName').removeClass("is-valid");
     $('#lastName').removeClass("is-valid");
@@ -54,24 +57,24 @@ function showDialogAdd() {
     $('#phone').removeClass("is-invalid");
     $('#birthday').removeClass("is-invalid");
 
-
-
     // Show the hidden dialog
     $('#myModal').modal('show');
 }
 
-var addItemButton = $('#addItem');
-addItemButton.on("click", showDialogAdd)
+var saveButton = $('#saveChanges');
+saveButton.on("click", saveChanges);
 
 function saveChanges() {
-    console.log("Changes have been saved.")
+    console.log("Changes are being saved.");
+    validateFunction();
 }
 
-var saveButton = $('#saveChanges');
-//saveButton.on("click", saveChanges);
 
 // Function to validate
 function validateFunction() {
+
+    var valid = true;
+
     // Get the field
     var v1 = $('#firstName').val();
     var v2 = $('#lastName').val();
@@ -80,9 +83,15 @@ function validateFunction() {
     var v5 = $('#birthday').val();
 
     var nameReg = /^[a-zA-Z]+(([',.-][a-z])?[a-zA-Z]*)*$/;
-    var emailReg = /^[A-Za-z0-9-_.]+@[A-Za-z0-9]+[.]+[A-Za-z0-9]{3,30}$/;
+    var emailReg = /^[A-Za-z0-9-_.]+@[A-Za-z0-9]+[.]+[A-Za-z0-9.]{3,30}$/;
     var phoneReg = /^[0-9]{3}([-]?)[0-9]{3}([-]?)[0-9]{4}$/;
     var birthdayReg = /^[0-9]{4}[-][0-9]{2}[-][0-9]{2}$/i;
+
+    // var firstName = (document.getElementById("firstName").value);
+    // var lastName = (document.getElementById("lastName").value);
+    // var email = (document.getElementById("email").value);
+    // var phone = (document.getElementById("phone").value);
+    // var birthday = (document.getElementById("birthday").value);
 
 // Test the regular expression to see if there is a match
     if (nameReg.test(v1)) {
@@ -94,6 +103,7 @@ function validateFunction() {
         $('#result').text("Bad");
         $('#firstName').removeClass("is-valid");
         $('#firstName').addClass("is-invalid");
+        valid = false;
     }
 
     if (nameReg.test(v2)) {
@@ -105,6 +115,7 @@ function validateFunction() {
         $('#result').text("Bad");
         $('#lastName').removeClass("is-valid");
         $('#lastName').addClass("is-invalid");
+        valid = false;
     }
 
     if (emailReg.test(v3)) {
@@ -116,6 +127,7 @@ function validateFunction() {
         $('#result').text("Bad");
         $('#email').removeClass("is-valid");
         $('#email').addClass("is-invalid");
+        valid = false;
     }
     if (phoneReg.test(v4)) {
         $('#result').text("Ok");
@@ -126,6 +138,7 @@ function validateFunction() {
         $('#result').text("Bad");
         $('#phone').removeClass("is-valid");
         $('#phone').addClass("is-invalid");
+        valid = false;
     }
     if (birthdayReg.test(v5)) {
         $('#result').text("Ok");
@@ -136,11 +149,46 @@ function validateFunction() {
         $('#result').text("Bad");
         $('#birthday').removeClass("is-valid");
         $('#birthday').addClass("is-invalid");
+        valid = false;
     }
 
-
+    if(valid){
+        var jsonData = {
+            "first":v1,
+            "last":v2,
+            "email":v3,
+            "phone":v4,
+            "birthday":v5
+        };
+        jqueryPostJSONAction(jsonData);
+    }
 }
 
-saveButton.on("click", validateFunction);
+function jqueryPostJSONAction(jsonData) {
 
-updateTable();
+    var url = "api/name_list_edit";
+
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data: JSON.stringify(jsonData),
+        success: function(dataFromServer) {
+            console.log(dataFromServer);
+            refreshFields();
+        },
+        contentType: "application/json",
+        dataType: 'text'
+        });
+    }
+
+    function refreshFields() {
+
+    for(var i = $("#datatable tr").length-1; i > 0 ; i--) {
+        $("#datatable tr")[i].remove();
+    }
+        $('#myModal').modal('hide');
+        updateTable();
+}
+
+
+
