@@ -18,14 +18,32 @@ $.getJSON(url, null, function(json_result)
                 '<td>' + json_result[i].email + '</td>' +
                 '<td>' + myPhone + '</td>' +
                 '<td>' + json_result[i].birthday + '</td>' +
+                '<td><button type="button" name="delete" ' + 'class="deleteButton btn" ' + 'value="' + json_result[i].id + '">Delete</button>' + '</td>' +
                 '</tr>');
-
         }
-        console.log("Done");
+        var buttons = $(".deleteButton");
+        buttons.on("click", deleteItem);
     });
 }
 
 updateTable();
+
+    function deleteItem(e) {
+        var jsonId = {"id": e.target.value};
+
+        var url = "api/name_list_delete";
+
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: JSON.stringify(jsonId),
+            success: function (dataFromServer) {
+                refreshFields();
+            },
+            contentType: "application/json",
+            dataType: 'text'
+        });
+}
 
 var addItemButton = $('#addItem');
 addItemButton.on("click", showDialogAdd)
@@ -93,7 +111,7 @@ function validateFunction() {
     // var phone = (document.getElementById("phone").value);
     // var birthday = (document.getElementById("birthday").value);
 
-// Test the regular expression to see if there is a match
+//Test the regular expression to see if there is a match
     if (nameReg.test(v1)) {
         $('#result').text("Ok");
         $('#firstName').removeClass("is-invalid");
@@ -161,7 +179,7 @@ function validateFunction() {
             "birthday":v5
         };
         jqueryPostJSONAction(jsonData);
-    }
+     }
 }
 
 function jqueryPostJSONAction(jsonData) {

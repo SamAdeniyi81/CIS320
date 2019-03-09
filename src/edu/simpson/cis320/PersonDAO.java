@@ -102,7 +102,6 @@ import java.sql.PreparedStatement;
                 conn = DBHelper.getConnection();
 
 
-
                 String sql = "INSERT INTO person (first, last, email, phone, birthday) VALUES (?, ?, ?, ?, ?);";
                 stmt = conn.prepareStatement(sql);
                 stmt.setString(1, person.getFirst());
@@ -129,8 +128,37 @@ import java.sql.PreparedStatement;
                 } catch (Exception e) {
                     log.log(Level.SEVERE, "Error", e);
                 }
+            }
+        }
 
+        public static void deletePerson(Person person) {
+            Connection conn = null;
+            PreparedStatement stmt = null;
 
+            try {
+                conn = DBHelper.getConnection();
+
+                String sql = "DELETE FROM person WHERE ID = ?;";
+                stmt = conn.prepareStatement(sql);
+                stmt.setString(1, person.getId() + "");
+                stmt.execute();
+
+            } catch (SQLException se) {
+                log.log(Level.SEVERE, "SQL Error", se);
+            } catch (Exception e) {
+                log.log(Level.SEVERE, "Error", e);
+            } finally {
+                // Ok, close our statement, and connection
+                try {
+                    stmt.close();
+                } catch (Exception e) {
+                    log.log(Level.SEVERE, "Error", e);
+                }
+                try {
+                    conn.close();
+                } catch (Exception e) {
+                    log.log(Level.SEVERE, "Error", e);
+                }
             }
         }
     }
