@@ -2,14 +2,14 @@ package edu.simpson.cis320;
 
 public class Person {
 
-    private int id;
+    private Integer id;
     private String first;
     private String last;
     private String email;
     private String phone;
     private String birthday;
 
-    public int getId() { return id; }
+    public Integer getId() { return id; }
 
     public void setId(int id) { this.id = id; }
 

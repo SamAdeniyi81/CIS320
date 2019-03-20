@@ -96,7 +96,6 @@ import java.sql.PreparedStatement;
             Connection conn = null;
             PreparedStatement stmt = null;
 
-            System.out.println(person.getPhone());
 
             try {
                 conn = DBHelper.getConnection();
