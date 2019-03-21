@@ -3,10 +3,12 @@ package edu.simpson.cis320;
 import com.google.gson.Gson;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.Console;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -99,7 +101,7 @@ public class NameListEdit extends HttpServlet {
             if(fromJson.getId() == null){
                 PersonDAO.insertPerson(fromJson);
             } else {
-                PersonDAO.insertPerson(fromJson);
+                PersonDAO.editPerson(fromJson);
             }
             System.out.println("All the fields passed validation");
         } else{
