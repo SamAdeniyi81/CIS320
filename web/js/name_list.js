@@ -10,7 +10,8 @@ $.getJSON(url, null, function(json_result)
         // Here we loop the array and print the first name.
         for (var i = 0; i < json_result.length; i++) {
             var phone = json_result[i].phone;
-            var myPhone = phone.substring(0,3) + "-" + phone.substring(3,6) + "-" + phone.substring(6,10);
+            phone = phone.replace(/-/g, "");
+            var myPhone = phone.substring(0, 3) + "-" + phone.substring(3, 6) + "-" + phone.substring(6, 10);
             $('#datatable tr:first').after('<tr>' +
                 '<td>' + json_result[i].id + '</td>' +
                 '<td>' + json_result[i].first + '</td>' +
@@ -18,15 +19,54 @@ $.getJSON(url, null, function(json_result)
                 '<td>' + json_result[i].email + '</td>' +
                 '<td>' + myPhone + '</td>' +
                 '<td>' + json_result[i].birthday + '</td>' +
-                '<td><button type="button" name="delete" ' + 'class="deleteButton btn" ' + 'value="' + json_result[i].id + '">Delete</button>' + '</td>' +
+                '<td><button type="button" name="delete" ' + 'class="deleteButton btn" ' + 'value="' + json_result[i].id +
+                '">Delete</button>' + '</td>' +
+                '<td><button type="button" name="edit" class="editButton btn" value="' + json_result[i].id + '"'
+                +'>Edit</button></td>' +
                 '</tr>');
         }
+
         var buttons = $(".deleteButton");
         buttons.on("click", deleteItem);
+
+        var ebuttons = $(".editButton");
+        ebuttons.on("click", editItem);
     });
 }
 
 updateTable();
+
+function editItem(e){
+
+    $('#id').removeClass("is-valid");
+    $('#firstName').removeClass("is-valid");
+    $('#lastName').removeClass("is-valid");
+    $('#email').removeClass("is-valid");
+    $('#phone').removeClass("is-valid");
+    $('#birthday').removeClass("is-valid");
+    $('#id').removeClass("is-invalid");
+    $('#firstName').removeClass("is-invalid");
+    $('#lastName').removeClass("is-invalid");
+    $('#email').removeClass("is-invalid");
+    $('#phone').removeClass("is-invalid");
+    $('#birthday').removeClass("is-invalid");
+
+    var id = e.target.value;
+    var firstName = e.target.parentNode.parentNode.querySelectorAll("td")[1].innerHTML;
+    var lastName = e.target.parentNode.parentNode.querySelectorAll("td")[2].innerHTML;
+    var phone = e.target.parentNode.parentNode.querySelectorAll("td")[4].innerHTML;
+    var email = e.target.parentNode.parentNode.querySelectorAll("td")[3].innerHTML;
+    var birthday = e.target.parentNode.parentNode.querySelectorAll("td")[5].innerHTML;
+
+    $('#id').val(id);
+    $('#firstName').val(firstName);
+    $('#lastName').val(lastName);
+    $('#phone').val(phone);
+    $('#email').val(email);
+    $('#birthday').val(birthday);
+
+    $('#myModal').modal('show');
+}
 
     function deleteItem(e) {
         var jsonId = {"id": e.target.value};
@@ -64,11 +104,14 @@ function showDialogAdd() {
     $('#phone').val("");
     $('#birthday').val();
 
+
+    $('#id').removeClass("is-valid");
     $('#firstName').removeClass("is-valid");
     $('#lastName').removeClass("is-valid");
     $('#email').removeClass("is-valid");
     $('#phone').removeClass("is-valid");
     $('#birthday').removeClass("is-valid");
+    $('#id').removeClass("is-invalid");
     $('#firstName').removeClass("is-invalid");
     $('#lastName').removeClass("is-invalid");
     $('#email').removeClass("is-invalid");
@@ -94,12 +137,14 @@ function validateFunction() {
     var valid = true;
 
     // Get the field
+    var v = $('#id').val();
     var v1 = $('#firstName').val();
     var v2 = $('#lastName').val();
     var v3 = $('#email').val();
     var v4 = $('#phone').val();
     var v5 = $('#birthday').val();
 
+    var idReg = /^[0-9]+$/;
     var nameReg = /^[a-zA-Z]+(([',.-][a-z])?[a-zA-Z]*)*$/;
     var emailReg = /^[A-Za-z0-9-_.]+@[A-Za-z0-9]+[.]+[A-Za-z0-9.]{3,30}$/;
     var phoneReg = /^[0-9]{3}([-]?)[0-9]{3}([-]?)[0-9]{4}$/;
@@ -112,6 +157,17 @@ function validateFunction() {
     // var birthday = (document.getElementById("birthday").value);
 
 //Test the regular expression to see if there is a match
+    if (idReg.test(v)) {
+        $('#result').text("Ok");
+        $('#firstName').removeClass("is-invalid");
+        $('#firstName').addClass("is-valid");
+
+    } else {
+        $('#result').text("Bad");
+        $('#firstName').removeClass("is-valid");
+        $('#firstName').addClass("is-invalid");
+        valid = false;
+    }
     if (nameReg.test(v1)) {
         $('#result').text("Ok");
         $('#firstName').removeClass("is-invalid");
@@ -172,6 +228,7 @@ function validateFunction() {
 
     if(valid){
         var jsonData = {
+            "id":v,
             "first":v1,
             "last":v2,
             "email":v3,
